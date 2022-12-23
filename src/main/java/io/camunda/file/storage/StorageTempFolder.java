@@ -44,11 +44,12 @@ public class StorageTempFolder extends Storage {
     Path tempPath = null;
     try {
       String fileName = fileVariable.getName();
+      fileName= fileName.replace("\\\"", "");
       String suffix = "";
-      int lastDot = fileVariable.getName().lastIndexOf(".");
+      int lastDot = fileName.lastIndexOf(".");
       if (lastDot != -1) {
-        fileName = fileVariable.getName().substring(0, lastDot) + "_";
-        suffix = fileVariable.getName().substring(lastDot + 1);
+        suffix = fileName.substring(lastDot + 1);
+        fileName = fileName.substring(0, lastDot) + "_";
       }
 
       tempPath = Files.createTempFile(fileName, "." + suffix);
