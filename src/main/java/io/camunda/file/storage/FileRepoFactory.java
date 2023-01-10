@@ -18,9 +18,13 @@
 /* ******************************************************************** */
 package io.camunda.file.storage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Random;
 
 public class FileRepoFactory {
+  Logger logger = LoggerFactory.getLogger(FileRepoFactory.class.getName());
 
   private final Random rand = new Random();
 
@@ -58,8 +62,10 @@ public class FileRepoFactory {
    * @throws Exception can't load the fileVariable
    */
   public FileVariable loadFileVariable(FileVariableReference fileVariableReference) throws Exception {
-    if (fileVariableReference == null || fileVariableReference.content == null)
+    if (fileVariableReference == null || fileVariableReference.content == null) {
+      logger.error("FileRepoFactory.loadFileVariable : the fileVariableReference and fileVariableReference.content must not be null");
       return null;
+    }
 
     StorageDefinition storageDefinition = StorageDefinition.getFromString(fileVariableReference.storageDefinition);
     Storage storage = getStorage(storageDefinition);
@@ -74,9 +80,11 @@ public class FileRepoFactory {
    * @throws Exception if an error arrive
    */
   public FileVariableReference saveFileVariable(FileVariable fileVariable) throws Exception {
-    if (fileVariable == null)
+    if (fileVariable == null) {
+      logger.error(
+          "FileRepoFactory.saveFileVariable : the fileVariable must not be null");
       return null;
-
+    }
     FileVariableReference fileVariableReference = new FileVariableReference();
     fileVariableReference.storageDefinition = fileVariable.getStorageDefinition().encodeToString();
 
@@ -93,9 +101,10 @@ public class FileRepoFactory {
    * @throws Exception if the purge failed
    */
   public boolean purgeFileVariable(FileVariableReference fileVariableReference) throws Exception {
-    if (fileVariableReference == null)
+    if (fileVariableReference == null) {
+      logger.warn("FileRepoFactory.purgeFileVariable : the fileVariableReference must not be null - no purge");
       return true;
-
+    }
     StorageDefinition storageDefinition = StorageDefinition.getFromString(fileVariableReference.storageDefinition);
     Storage storage = getStorage(storageDefinition);
     return storage.purgeStorage(fileVariableReference);
