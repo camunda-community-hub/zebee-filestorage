@@ -4,7 +4,7 @@
 /*                                                                      */
 /*  Transport parameters to connect to a CMIS repository                */
 /* ******************************************************************** */
-package io.camunda.file.storage.cmis;
+package io.camunda.filestorage.cmis;
 
 import java.util.Map;
 

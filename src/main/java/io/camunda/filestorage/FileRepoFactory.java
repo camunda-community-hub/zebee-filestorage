@@ -16,7 +16,7 @@
 /*          the method return a FileVariableReference                   */
 /*       loadFileVariable( FileVariableReference): load the file        */
 /* ******************************************************************** */
-package io.camunda.file.storage;
+package io.camunda.filestorage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
