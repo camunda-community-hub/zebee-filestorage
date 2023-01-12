@@ -4,7 +4,7 @@
 /*                                                                      */
 /*  Manage the connection to one CMIS repository                        */
 /* ******************************************************************** */
-package io.camunda.file.storage.cmis;
+package io.camunda.filestorage.cmis;
 
 import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;

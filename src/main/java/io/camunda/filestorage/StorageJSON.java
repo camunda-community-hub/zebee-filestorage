@@ -5,7 +5,7 @@
 /*  Save a file variable in JSON, in the Camunda Engine                 */
 /*  File are encoded in JSON                                            */
 /* ******************************************************************** */
-package io.camunda.file.storage;
+package io.camunda.filestorage;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

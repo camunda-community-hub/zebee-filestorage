@@ -4,7 +4,7 @@
 /*                                                                      */
 /*  Manage all connection for CMIS                                      */
 /* ******************************************************************** */
-package io.camunda.file.storage.cmis;
+package io.camunda.filestorage.cmis;
 
 
 import java.util.HashMap;

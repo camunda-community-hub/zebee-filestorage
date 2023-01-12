@@ -90,7 +90,7 @@ The file is saved in JSON, and the FileVariableReference contains the complete d
 Storage Definition Key: "JSON"
 
 ````
-import io.camunda.file.storage.StorageJSON;
+import StorageJSON;
 
 StorageCMIS.getStorageDefinitionString()
 ````
@@ -104,7 +104,7 @@ If multiple applications (different connectors) needs to access the file, this i
 Storage Definition Key: "TEMPFOLDER"
 
 ````
-import io.camunda.file.storage.StorageTempFolder;
+import StorageTempFolder;
 
 StorageCMIS.getStorageDefinitionString()
 ````
@@ -117,7 +117,7 @@ Storage Definition Key: "FOLDER:/mnt/filestorage"
 
 
 ````
-import io.camunda.file.storage.StorageFolder;
+import StorageFolder;
 
 StorageCMIS.getStorageDefinitionString(String folder)
 ````
@@ -133,7 +133,7 @@ Storage Definition Key: "CMIS:{"url":"<url>", "repositoryName":"<repositoryName>
 The static methode is available in the StorageCMIS class
 
 ````
-import io.camunda.file.storage.StorageCMIS;
+import StorageCMIS;
 
 StorageCMIS.getStorageDefinitionString(String url, String repositoryName, String userName, String password, String storageDefinitionFolder)
 ````

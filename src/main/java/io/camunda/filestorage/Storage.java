@@ -1,4 +1,4 @@
-package io.camunda.file.storage;
+package io.camunda.filestorage;
 
 public abstract class Storage {
 

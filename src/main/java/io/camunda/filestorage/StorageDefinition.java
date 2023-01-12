@@ -9,7 +9,7 @@
 /*  This class just manipulate the information with the format          */
 /*  <Type>:<Complement>
 /* ******************************************************************** */
-package io.camunda.file.storage;
+package io.camunda.filestorage;
 
 import com.google.gson.Gson;
 import org.slf4j.Logger;

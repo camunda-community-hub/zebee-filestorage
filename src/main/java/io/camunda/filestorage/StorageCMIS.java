@@ -4,12 +4,12 @@
 /*                                                                      */
 /*  Save a file variable in CMIS,                                       */
 /* ******************************************************************** */
-package io.camunda.file.storage;
+package io.camunda.filestorage;
 
 import com.google.gson.Gson;
-import io.camunda.file.storage.cmis.CmisConnection;
-import io.camunda.file.storage.cmis.CmisFactoryConnection;
-import io.camunda.file.storage.cmis.CmisParameters;
+import io.camunda.filestorage.cmis.CmisConnection;
+import io.camunda.filestorage.cmis.CmisFactoryConnection;
+import io.camunda.filestorage.cmis.CmisParameters;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.slf4j.Logger;
@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.Map;
 
 public class StorageCMIS extends Storage {
     Logger logger = LoggerFactory.getLogger(StorageCMIS.class.getName());

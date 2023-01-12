@@ -7,7 +7,7 @@
 /*  The content may be retrieved via the FileVariableFactory            */
 /*                                                                      */
 /* ******************************************************************** */
-package io.camunda.file.storage;
+package io.camunda.filestorage;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
