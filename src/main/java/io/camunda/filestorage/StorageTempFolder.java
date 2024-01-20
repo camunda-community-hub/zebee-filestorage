@@ -19,8 +19,6 @@ import java.nio.file.Paths;
 public class StorageTempFolder extends Storage {
   Logger logger = LoggerFactory.getLogger(StorageTempFolder.class.getName());
 
-  private FileRepoFactory fileRepoFactory;
-
   protected StorageTempFolder(StorageDefinition storageDefinition, FileRepoFactory fileRepoFactory) {
     super(storageDefinition, fileRepoFactory);
   }
@@ -61,7 +59,7 @@ public class StorageTempFolder extends Storage {
       return fileVariableReferenceOutput;
 
     } catch (Exception e) {
-      logger.error(fileRepoFactory.getLoggerHeaderMessage(StorageTempFolder.class) + "Exception " + e
+      logger.error(getFileRepoFactory().getLoggerHeaderMessage(StorageTempFolder.class) + "Exception " + e
           + " During write fileVariable on tempFolder[" + tempPath + "]");
       throw e;
     }
@@ -75,26 +73,25 @@ public class StorageTempFolder extends Storage {
    * @throws Exception during the writing
    */
   public FileVariable fromStorage(FileVariableReference fileVariableReference) throws Exception {
-    String tempFilePath;
     try {
       // get the temporary path
-      Path tempPath = Files.createTempFile("", "");
+      Path tempFolder = getTempFolder();
       String separator = FileSystems.getDefault().getSeparator();
-      tempFilePath = tempPath.toString().substring(0, tempPath.toString().lastIndexOf(separator));
-
       FileVariable fileVariable = new FileVariable(getStorageDefinition());
       fileVariable.setName(fileVariableReference.content.toString());
       fileVariable.setMimeType(FileVariable.getMimeTypeFromName(fileVariableReference.content.toString()));
-      fileVariable.setValue(Files.readAllBytes(Paths.get(tempFilePath + separator + fileVariableReference.content.toString())));
+      fileVariable.setValue(Files.readAllBytes(Paths.get(tempFolder.toString() + separator + fileVariableReference.content.toString())));
       return fileVariable;
 
     } catch (Exception e) {
       logger.error(
-          fileRepoFactory.getLoggerHeaderMessage(StorageTempFolder.class) + "Exception " + e + " During read file["
+          getFileRepoFactory().getLoggerHeaderMessage(StorageTempFolder.class) + "Exception " + e + " During read file["
               + fileVariableReference.content.toString() + "] in temporaryPath[" + fileVariableReference.content.toString() + "]");
       throw e;
     }
   }
+
+
 
   /**
    * Delete the file
@@ -104,11 +101,19 @@ public class StorageTempFolder extends Storage {
    */
   public boolean purgeStorage( FileVariableReference fileVariableReference) {
 
-    String tmpDir = System.getProperty("java.io.tmpdir");
-    File file = new File(tmpDir + FileSystems.getDefault().getSeparator() + fileVariableReference.getContent().toString());
+    Path tempFolder = getTempFolder();
+    File file = new File(tempFolder.toString() + FileSystems.getDefault().getSeparator() + fileVariableReference.getContent().toString());
     if (file.exists())
       return file.delete();
     return true;
   }
 
+  /**
+   * get the temporary path
+   * @return the temporary path on this host
+   */
+  public static Path getTempFolder()  {
+    String tmpDir = System.getProperty("java.io.tmpdir");
+    return Paths.get(tmpDir);
+  }
 }

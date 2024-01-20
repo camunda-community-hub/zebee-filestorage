@@ -137,3 +137,6 @@ import StorageCMIS;
 
 StorageCMIS.getStorageDefinitionString(String url, String repositoryName, String userName, String password, String storageDefinitionFolder)
 ````
+
+## URL
+The file may be access via an URL ()
