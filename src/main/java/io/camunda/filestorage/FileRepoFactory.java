@@ -131,6 +131,7 @@ public class FileRepoFactory {
       case FOLDER -> new StorageFolder(storageDefinition, this);
       case CMIS -> new StorageCMIS(storageDefinition, this);
       case TEMPFOLDER -> new StorageTempFolder(storageDefinition, this);
+      case URL -> new StorageURL(storageDefinition, this);
     };
    }
 }

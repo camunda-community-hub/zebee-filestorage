@@ -39,8 +39,17 @@ public class FileVariableReference {
   public static FileVariableReference fromJson(String fileReferenceJson) throws Exception {
     try {
       return new ObjectMapper().readValue(fileReferenceJson, FileVariableReference.class);
-    } catch (JsonProcessingException e) {
-      logger.error("FileStorage.FileVariableReference.fromJson: exception " + e + " During un serialize fileVariable");
+    } catch (Exception e) {
+    }
+    // do a second tentative before logging
+    String fileReferenceJsonWithoutBackslash = fileReferenceJson.replace("\\\"", "\"");
+    try {
+      // if the value is given explicitly, the modeler impose to \ each ", so we have to replace all \" by "
+      return new ObjectMapper().readValue(fileReferenceJsonWithoutBackslash, FileVariableReference.class);
+    } catch (Exception e) {
+      // then now we have to log the error
+      logger.error("FileStorage.FileVariableReference.fromJson:" + e + " During UnSerialize[" + fileReferenceJson
+          + "], secondTentative[" + fileReferenceJsonWithoutBackslash + "]");
       throw e;
     }
   }
@@ -70,17 +79,27 @@ public class FileVariableReference {
 
   /**
    * Must be static to not make any trouble in the serialization/deserialization
-   * @param fieldReference field reference to get the identification
-   * @return an indentification, to log it for example
+   *
+   * @return information, to log it for example
    */
-  public static String getIdentification(FileVariableReference fieldReference) {
-      StringBuilder result = new StringBuilder();
-      result.append(fieldReference.storageDefinition);
-      result.append( ": ");
-      if (fieldReference.content==null)
-          result.append("null");
-      else
-          result.append((fieldReference.content.toString() + "                  ").substring(0, 50));
-      return result.toString();
+  public static String getInformation(FileVariableReference fileVariableReference) {
+    StringBuilder result = new StringBuilder();
+    try {
+      StorageDefinition storageDefinition = StorageDefinition.getFromString(fileVariableReference.storageDefinition);
+      result.append(storageDefinition.getInformation());
+    } catch (Exception e) {
+      result.append("Can't get storageDefinition from [");
+      result.append(fileVariableReference.storageDefinition);
+      result.append("] : ");
+      result.append(e.getMessage());
+    }
+    result.append(": ");
+    if (fileVariableReference.content == null)
+      result.append("null");
+    else if (fileVariableReference.content.toString().length() < 100)
+      result.append(fileVariableReference.content.toString());
+    else
+      result.append(fileVariableReference.content.toString().substring(0, 100));
+    return result.toString();
   }
 }
