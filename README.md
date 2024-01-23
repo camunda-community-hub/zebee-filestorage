@@ -1,8 +1,10 @@
 # zebee-cherry-filestorage
+[![](https://img.shields.io/badge/Community%20Extension-An%20open%20source%20community%20maintained%20project-FF4700)](https://github.com/camunda-community-hub/community)
+![Compatible with: Camunda 8](https://img.shields.io/badge/Compatible%20with-Camunda%208-0072Ce)
 
 Library to manipulate File process variable, and store the content in different storage (Folder, CMIS...)
 
-This library is used by connectors. There is three main function 
+This library is used by connectors. 
 
 
 # Store file to the storage
@@ -51,7 +53,7 @@ The fileVariableReference is only a reference, and can be saved in the process v
 
 # Read file from the storage
 
-To read a file from the storage, the first operation consist to access the FileVariableReference
+To read a file from the storage, the first operation consist of accessing the FileVariableReference
 
 ````
     String processVariableSt = <GetFromProcessVariable>
@@ -139,4 +141,13 @@ StorageCMIS.getStorageDefinitionString(String url, String repositoryName, String
 ````
 
 ## URL
-The file may be access via an URL ()
+The file may be access via an URL. This storage is use to READ only.
+
+For example, this soure file read a document from an URL.
+`````json
+{ 
+  "storageDefinition": "URL",
+  "content": "https://github.com/camunda-community-hub/camunda-8-connector-officetopdf/raw/main/src/test/resources/OfficeToPdfExample.docx"
+}
+
+`````
