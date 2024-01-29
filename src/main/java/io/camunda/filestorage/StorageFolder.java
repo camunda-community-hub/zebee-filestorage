@@ -40,6 +40,15 @@ public class StorageFolder extends Storage{
     }
 
     /**
+     *
+     * @param folder folder to save the file
+     * @return the connection string
+     */
+    public static String getStorageDefinitionString(Path folder ) {
+        return StorageDefinition.StorageDefinitionType.FOLDER.toString()+StorageDefinition.STORAGE_DEFINITION_DELIMITATEUR+folder.toString();
+    }
+
+    /**
      * Save the file Variable structure in the temporary folder
      *
      * @param fileVariable      fileVariable to save it

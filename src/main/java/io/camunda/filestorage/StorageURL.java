@@ -17,6 +17,22 @@ public class StorageURL extends Storage {
     super(storageDefinition, fileRepoFactory);
   }
 
+  /**
+   *
+   * @param url to access
+   * @return the connection string
+   */
+  public static String getStorageDefinitionString(URL url ) {
+    return StorageDefinition.StorageDefinitionType.URL.toString()+StorageDefinition.STORAGE_DEFINITION_DELIMITATEUR+url.toString();
+  }
+  /**
+   *
+   * @param url to access
+   * @return the connection string
+   */
+  public static String getStorageDefinitionString(String url ) {
+    return StorageDefinition.StorageDefinitionType.URL.toString()+StorageDefinition.STORAGE_DEFINITION_DELIMITATEUR+url;
+  }
   @Override
   public String getName() {
     return "URL";
