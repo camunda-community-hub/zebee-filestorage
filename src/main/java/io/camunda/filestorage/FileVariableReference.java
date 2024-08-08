@@ -30,6 +30,10 @@ public class FileVariableReference {
   public Object content;
 
   /**
+   * original Filename is one was provided
+   */
+  public String originalFileName;
+  /**
    * Transform the reference from JSON
    *
    * @param fileReferenceJson file Reference in JSON
