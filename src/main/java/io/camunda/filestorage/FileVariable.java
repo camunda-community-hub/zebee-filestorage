@@ -14,6 +14,7 @@ import java.nio.file.Path;
 /* Definition of a FileVariable */
 public class FileVariable {
   private String name;
+  private String originalName=null;
   private String mimeType;
   private byte[] value;
 
@@ -52,7 +53,13 @@ public class FileVariable {
 
   public void setName(String name) {
     this.name = name;
+    if (originalName==null)
+      originalName= name;
   }
+
+  public void setOriginalName(String originalName) {this.originalName=originalName;}
+
+  public String getOriginalName() { return this.originalName;}
 
   public void setMimeType(String mimeType) {
     this.mimeType = mimeType;

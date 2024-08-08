@@ -41,7 +41,7 @@ public class FileRepoFactory {
   public FileVariable createFileVariable() {
     try {
       return new FileVariable(StorageDefinition.getFromString(StorageDefinition.StorageDefinitionType.JSON.toString()));
-    }catch (Exception e) {
+    } catch (Exception e) {
       // It should never have happened: JSON does not generate an exception
       return null;
     }
@@ -63,13 +63,16 @@ public class FileRepoFactory {
    */
   public FileVariable loadFileVariable(FileVariableReference fileVariableReference) throws Exception {
     if (fileVariableReference == null || fileVariableReference.content == null) {
-      logger.error("FileRepoFactory.loadFileVariable : the fileVariableReference and fileVariableReference.content must not be null");
+      logger.error(
+          "FileRepoFactory.loadFileVariable : the fileVariableReference and fileVariableReference.content must not be null");
       return null;
     }
 
     StorageDefinition storageDefinition = StorageDefinition.getFromString(fileVariableReference.storageDefinition);
     Storage storage = getStorage(storageDefinition);
-    return storage.fromStorage(fileVariableReference);
+    FileVariable fileVariable = storage.fromStorage(fileVariableReference);
+    fileVariable.setOriginalName(fileVariableReference.originalFileName);
+    return fileVariable;
   }
 
   /**
@@ -81,15 +84,15 @@ public class FileRepoFactory {
    */
   public FileVariableReference saveFileVariable(FileVariable fileVariable) throws Exception {
     if (fileVariable == null) {
-      logger.error(
-          "FileRepoFactory.saveFileVariable : the fileVariable must not be null");
+      logger.error("FileRepoFactory.saveFileVariable : the fileVariable must not be null");
       return null;
     }
-    FileVariableReference fileVariableReference = new FileVariableReference();
-    fileVariableReference.storageDefinition = fileVariable.getStorageDefinition().encodeToString();
-
     Storage storage = getStorage(fileVariable.getStorageDefinition());
-    fileVariableReference = storage.toStorage(fileVariable, null);
+    FileVariableReference fileVariableReference = storage.toStorage(fileVariable, null);
+
+    // override the storageDefinition to be sure
+    fileVariableReference.storageDefinition = fileVariable.getStorageDefinition().encodeToString();
+    fileVariableReference.originalFileName = fileVariable.getOriginalName();
     return fileVariableReference;
   }
 
@@ -133,5 +136,5 @@ public class FileRepoFactory {
       case TEMPFOLDER -> new StorageTempFolder(storageDefinition, this);
       case URL -> new StorageURL(storageDefinition, this);
     };
-   }
+  }
 }
