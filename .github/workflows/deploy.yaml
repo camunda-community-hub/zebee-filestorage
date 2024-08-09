@@ -22,6 +22,10 @@ jobs:
 
       - name: Deploy SNAPSHOT / Release
         uses: camunda-community-hub/community-action-maven-release@v1.2.2
+        env:
+          ACTIONS_RUNNER_DEBUG: true
+          ACTIONS_STEP_DEBUG: true
+
         with:
           release-version: ${{ github.event.release.tag_name }}
           nexus-usr: ${{ secrets.NEXUS_USR }}
