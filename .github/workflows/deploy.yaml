@@ -1,12 +1,17 @@
+---
 name: Deploy artifacts with Maven
+
 on:
   push:
     branches: [main]
   release:
     types: [published]
+
 jobs:
   publish:
     runs-on: ubuntu-20.04
+    permissions:
+      contents: write # needed to push Git tags
     steps:
       - name: Checks out code
         uses: actions/checkout@v4
@@ -25,14 +30,12 @@ jobs:
         env:
           ACTIONS_RUNNER_DEBUG: true
           ACTIONS_STEP_DEBUG: true
-
         with:
           release-version: ${{ github.event.release.tag_name }}
           nexus-usr: ${{ secrets.NEXUS_USR }}
           nexus-psw: ${{ secrets.NEXUS_PSW }}
-          maven-usr: ${{ secrets.COMMUNITY_HUB_MAVEN_CENTRAL_OSS_USR }}
-          maven-psw: ${{ secrets.COMMUNITY_HUB_MAVEN_CENTRAL_OSS_PSW }}
-          maven-url: oss.sonatype.org
+          sonatype-central-portal-usr: ${{ secrets.COMMUNITY_HUB_MAVEN_CENTRAL_CP_USR }}
+          sonatype-central-portal-psw: ${{ secrets.COMMUNITY_HUB_MAVEN_CENTRAL_CP_PSW }}
           maven-gpg-passphrase: ${{ secrets.MAVEN_CENTRAL_GPG_SIGNING_KEY_PASSPHRASE }}
           maven-auto-release-after-close: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
