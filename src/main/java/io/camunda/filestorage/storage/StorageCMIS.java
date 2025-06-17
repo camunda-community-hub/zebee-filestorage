@@ -4,9 +4,12 @@
 /*                                                                      */
 /*  Save a file variable in CMIS,                                       */
 /* ******************************************************************** */
-package io.camunda.filestorage;
+package io.camunda.filestorage.storage;
 
 import com.google.gson.Gson;
+import io.camunda.filestorage.FileRepoFactory;
+import io.camunda.filestorage.FileVariable;
+import io.camunda.filestorage.FileVariableReference;
 import io.camunda.filestorage.cmis.CmisConnection;
 import io.camunda.filestorage.cmis.CmisFactoryConnection;
 import io.camunda.filestorage.cmis.CmisParameters;
@@ -22,7 +25,7 @@ public class StorageCMIS extends Storage {
     Logger logger = LoggerFactory.getLogger(StorageCMIS.class.getName());
 
 
-    protected StorageCMIS(StorageDefinition storageDefinition,  FileRepoFactory fileRepoFactory) {
+    public StorageCMIS(StorageDefinition storageDefinition, FileRepoFactory fileRepoFactory) {
         super(storageDefinition, fileRepoFactory);
     }
 
@@ -62,7 +65,7 @@ public class StorageCMIS extends Storage {
      * @param fileVariable      fileVariable to save it
      * @param fileVariableReference  file variable to update (may be null)
      */
-    public FileVariableReference toStorage( FileVariable fileVariable, FileVariableReference fileVariableReference) throws Exception {
+    public FileVariableReference toStorage(FileVariable fileVariable, FileVariableReference fileVariableReference) throws Exception {
         CmisParameters cmisParameters = CmisParameters.getCodingConnection(getStorageDefinition().complementInObject);
         CmisConnection cmisConnection = CmisFactoryConnection.getInstance().getCmisConnection(cmisParameters);
         if (cmisConnection == null)

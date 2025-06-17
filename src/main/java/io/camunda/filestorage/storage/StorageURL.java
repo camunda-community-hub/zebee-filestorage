@@ -1,5 +1,8 @@
-package io.camunda.filestorage;
+package io.camunda.filestorage.storage;
 
+import io.camunda.filestorage.FileRepoFactory;
+import io.camunda.filestorage.FileVariable;
+import io.camunda.filestorage.FileVariableReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +16,7 @@ public class StorageURL extends Storage {
   Logger logger = LoggerFactory.getLogger(StorageURL.class.getName());
 
 
-  protected StorageURL(StorageDefinition storageDefinition, FileRepoFactory fileRepoFactory) {
+  public StorageURL(StorageDefinition storageDefinition, FileRepoFactory fileRepoFactory) {
     super(storageDefinition, fileRepoFactory);
   }
 

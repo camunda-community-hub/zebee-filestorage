@@ -6,8 +6,11 @@
 /* syntax is FOLDER:<Path>                                              */
 /*  Attention, the folder must be accessible where the worker is running*/
 /* ******************************************************************** */
-package io.camunda.filestorage;
+package io.camunda.filestorage.storage;
 
+import io.camunda.filestorage.FileRepoFactory;
+import io.camunda.filestorage.FileVariable;
+import io.camunda.filestorage.FileVariableReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +24,7 @@ public class StorageFolder extends Storage{
     Logger logger = LoggerFactory.getLogger(StorageFolder.class.getName());
 
 
-    protected StorageFolder(StorageDefinition storageDefinition,  FileRepoFactory fileRepoFactory) {
+    public StorageFolder(StorageDefinition storageDefinition, FileRepoFactory fileRepoFactory) {
         super(storageDefinition, fileRepoFactory);
     }
 
@@ -54,7 +57,7 @@ public class StorageFolder extends Storage{
      * @param fileVariable      fileVariable to save it
      * @param fileVariableReference  file variable to update (may be null)
      */
-    public FileVariableReference toStorage( FileVariable fileVariable, FileVariableReference fileVariableReference) throws Exception {
+    public FileVariableReference toStorage(FileVariable fileVariable, FileVariableReference fileVariableReference) throws Exception {
         Path tempPath = null;
         try {
             String uniqId = fileVariableReference==null? getFileRepoFactory().generateUniqId() : (String) fileVariableReference.content;

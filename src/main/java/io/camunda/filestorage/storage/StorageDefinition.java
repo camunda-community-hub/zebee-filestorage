@@ -9,12 +9,18 @@
 /*  This class just manipulate the information with the format          */
 /*  <Type>:<Complement>
 /* ******************************************************************** */
-package io.camunda.filestorage;
+package io.camunda.filestorage.storage;
 
 import com.google.gson.Gson;
 import io.camunda.filestorage.cmis.CmisParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+/**
+ * Why the storageDefinition does not contains the OutboundConnectorContext ?
+ * The storage definition is static, define information and not supposed to manipulate objects like the OutboundConnectorContext
+ * The goal of the definition is to be saved in JSON in the process, or in the process variable.
+ */
 
 public class StorageDefinition {
 
@@ -25,6 +31,16 @@ public class StorageDefinition {
   public String complement = null;
   public Object complementInObject = null;
 
+  /**
+   * Filestorage may need complement to connect
+   */
+  public Object fileStorageComplement;
+  /**
+   *
+   * @param completeStorageDefinition storage definition as a string
+   * @return the storageDefinition object
+   * @throws Exception
+   */
   public static StorageDefinition getFromString(String completeStorageDefinition) throws Exception {
     try {
       int posDelimiter = completeStorageDefinition.indexOf(STORAGE_DEFINITION_DELIMITATEUR);
@@ -43,7 +59,12 @@ public class StorageDefinition {
         Gson gson = new Gson();
         storageDefinition.complementInObject = gson.fromJson(complement, Object.class);
         break;
-      default:
+        case GOOGLEDRIVE:
+          // Complement is the folder where to save the data
+          // Note: this is not the authorization information, which is store in the fileStorageComplement
+          complement = completeStorageDefinition.substring(posDelimiter + 1);
+          storageDefinition.complementInObject = complement;
+        default:
         break;
       }
 
@@ -93,7 +114,7 @@ public class StorageDefinition {
         CmisParameters cmisParameters = CmisParameters.getCodingConnection(complementInObject);
         info.append(": url[");
         info.append(cmisParameters.url);
-        info.append("] respitory[");
+        info.append("] repository[");
         info.append(cmisParameters.repositoryName);
         info.append("] userName[");
         info.append(cmisParameters.userName);
@@ -116,6 +137,9 @@ public class StorageDefinition {
     case JSON:
       info.append("");
       break;
+
+      case CAMUNDA:
+        break;
     }
     return info.toString();
   }
@@ -124,6 +148,6 @@ public class StorageDefinition {
    * Define how the file variable is stored.
    * JSON: easy, but attention to large file
    */
-  public enum StorageDefinitionType {JSON, TEMPFOLDER, FOLDER, CMIS, URL}
+  public enum StorageDefinitionType {JSON, TEMPFOLDER, FOLDER, CMIS, URL, CAMUNDA, GOOGLEDRIVE}
 
 }
