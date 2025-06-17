@@ -5,10 +5,13 @@
 /*  Save a file variable in JSON, in the Camunda Engine                 */
 /*  File are encoded in JSON                                            */
 /* ******************************************************************** */
-package io.camunda.filestorage;
+package io.camunda.filestorage.storage;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.camunda.filestorage.FileRepoFactory;
+import io.camunda.filestorage.FileVariable;
+import io.camunda.filestorage.FileVariableReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

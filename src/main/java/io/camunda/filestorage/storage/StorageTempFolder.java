@@ -5,8 +5,11 @@
 /*  Save a file variable in the temporary folder of the host            */
 /*  Attention, this is the temporary folder where the worker is running */
 /* ******************************************************************** */
-package io.camunda.filestorage;
+package io.camunda.filestorage.storage;
 
+import io.camunda.filestorage.FileRepoFactory;
+import io.camunda.filestorage.FileVariable;
+import io.camunda.filestorage.FileVariableReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +22,7 @@ import java.nio.file.Paths;
 public class StorageTempFolder extends Storage {
   Logger logger = LoggerFactory.getLogger(StorageTempFolder.class.getName());
 
-  protected StorageTempFolder(StorageDefinition storageDefinition, FileRepoFactory fileRepoFactory) {
+  public StorageTempFolder(StorageDefinition storageDefinition, FileRepoFactory fileRepoFactory) {
     super(storageDefinition, fileRepoFactory);
   }
 

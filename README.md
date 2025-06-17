@@ -43,7 +43,7 @@ There is no "expiration mechanism" (except the temporary folder, which is purged
 
 # API
 
-The API contains three main access.
+The API contains three main accesses.
 
 ## Store files
 
@@ -227,3 +227,10 @@ From a *StorageDefinition*, the string can be get:
 `````java
 String storageDefinitionSt = storageDefinition.encodeToString()
 `````
+
+## CAMUNDA
+
+When the Camunda storage is used, a Context must be provided. This context is retrieved from a connector. 
+The storage works only from Connector and not from an application: the document is considered as a process variable.
+
+The Json produced is different than the other storage, because the JSON produced is created by the Camunda Library.

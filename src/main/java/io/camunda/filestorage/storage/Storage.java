@@ -1,4 +1,8 @@
-package io.camunda.filestorage;
+package io.camunda.filestorage.storage;
+
+import io.camunda.filestorage.FileRepoFactory;
+import io.camunda.filestorage.FileVariable;
+import io.camunda.filestorage.FileVariableReference;
 
 public abstract class Storage {
 
@@ -33,11 +37,11 @@ public abstract class Storage {
   /**
    * Save a FileVariable to the storageDefinition.
    * @param fileVariable file to save
-   * @param fileVariableReference  the reference to update. May be null to save the file for the first time
+   * @param fileVariableReference  the reference to update. Maybe null to save the file for the first time
    * @return a FileVariableReference
-   * @throws Exception if an error arrive
+   * @throws Exception if an error arrived
    */
-   public abstract FileVariableReference toStorage( FileVariable fileVariable, FileVariableReference fileVariableReference) throws Exception;
+   public abstract FileVariableReference toStorage(FileVariable fileVariable, FileVariableReference fileVariableReference) throws Exception;
 
   /**
    * Return a File variable from a FileVariableReference

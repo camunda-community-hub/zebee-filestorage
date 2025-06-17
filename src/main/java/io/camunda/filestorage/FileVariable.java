@@ -6,6 +6,8 @@
 /* ******************************************************************** */
 package io.camunda.filestorage;
 
+import io.camunda.filestorage.storage.StorageDefinition;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -35,7 +37,7 @@ public class FileVariable {
   /**
    * To load / create a file Variable, go to the FileVariableFactory
    */
-  protected FileVariable(StorageDefinition storageDefinition) {
+  public FileVariable(StorageDefinition storageDefinition) {
     this.storageDefinition = storageDefinition;
   }
 
