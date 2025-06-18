@@ -1,25 +1,33 @@
+# If this workflow is triggered by a push to either main or release branches then it
+#        deploys a SNAPSHOT
+# If this workflow is triggered by publishing a Release, it
+#        deploys a RELEASE with the selected version
+#        updates the project version by incrementing the patch version
+#        commits the version update change to the repository's branch that triggered the workflow.
 name: Deploy artifacts with Maven
+
 on:
   push:
-    branches: [master]
+    branches:
+      - main
+      - release/**
+      - master
   release:
-    types: [published]
+    types: [ published ]
 jobs:
   publish:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+
+      - name: Check out code
+        uses: actions/checkout@v4
+
       - name: Set up Java environment
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v4
         with:
-          java-version: 17
+          java-version: '21'
+          distribution: 'adopt'
+          cache: maven
           gpg-private-key: ${{ secrets.MAVEN_CENTRAL_GPG_SIGNING_KEY_SEC }}
           gpg-passphrase: MAVEN_CENTRAL_GPG_PASSPHRASE
 
@@ -27,21 +35,27 @@ jobs:
         uses: camunda-community-hub/community-action-maven-release@v2
         with:
           release-version: ${{ github.event.release.tag_name }}
+          maven-url: s01.oss.sonatype.org
           nexus-usr: ${{ secrets.NEXUS_USR }}
           nexus-psw: ${{ secrets.NEXUS_PSW }}
-          sonatype-central-portal-usr: ${{ secrets.COMMUNITY_HUB_MAVEN_CENTRAL_CP_USR }}
-          sonatype-central-portal-psw: ${{ secrets.COMMUNITY_HUB_MAVEN_CENTRAL_CP_PSW }}
+          maven-usr: ${{ secrets.COMMUNITY_HUB_MAVEN_CENTRAL_S01_USR }}
+          maven-psw: ${{ secrets.COMMUNITY_HUB_MAVEN_CENTRAL_S01_PSW }}
+          central-sonatype-usr: ${{ secrets.COMMUNITY_HUB_MAVEN_CENTRAL_CP_USR }}
+          central-sonatype-psw: ${{ secrets.COMMUNITY_HUB_MAVEN_CENTRAL_CP_PSW }}
+          maven-additional-options: -U
           maven-gpg-passphrase: ${{ secrets.MAVEN_CENTRAL_GPG_SIGNING_KEY_PASSPHRASE }}
           maven-auto-release-after-close: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.event.release.target_commitish || github.ref_name }}
         id: release
-          - if: github.event.release
-            name: Attach artifacts to GitHub Release (Release only)
-            uses: actions/upload-release-asset@v1
-            env:
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            with:
-              upload_url: ${{ github.event.release.upload_url }}
-              asset_path: ${{ steps.release.outputs.artifacts_archive_path }}
-              asset_name: ${{ steps.release.outputs.artifacts_archive_path }}
-              asset_content_type: application/zip
+
+      - if: github.event.release
+        name: Attach artifacts to GitHub Release (Release only)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ${{ steps.release.outputs.artifacts_archive_path }}
+          asset_name: ${{ steps.release.outputs.artifacts_archive_path }}
+          asset_content_type: application/zip
