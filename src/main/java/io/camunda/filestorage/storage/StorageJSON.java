@@ -24,32 +24,30 @@ public class StorageJSON extends Storage {
 
     }
 
+    public static String getStorageDefinitionString() {
+        return StorageDefinition.StorageDefinitionType.JSON.name();
+    }
+
     @Override
     public String getName() {
         return "JSON";
     }
 
-
-    public static String getStorageDefinitionString( ) {
-        return StorageDefinition.StorageDefinitionType.JSON.name();
-    }
-
-
-        /**
-         * Save the file Variable structure as JSON
-         *
-         * @param fileVariable fileVariable to generate the JSON value
-         * @param fileVariableReferenceUpdated fileVariableReference to update
-         */
+    /**
+     * Save the file Variable structure as JSON
+     *
+     * @param fileVariable                 fileVariable to generate the JSON value
+     * @param fileVariableReferenceUpdated fileVariableReference to update
+     */
     public FileVariableReference toStorage(FileVariable fileVariable, FileVariableReference fileVariableReferenceUpdated)
-        throws Exception {
+            throws Exception {
         try {
             FileVariableReference fileVariableReference = new FileVariableReference();
             fileVariableReference.storageDefinition = getStorageDefinition().encodeToString();
             fileVariableReference.content = new ObjectMapper().writeValueAsString(fileVariable);
             return fileVariableReference;
         } catch (JsonProcessingException e) {
-            logger.error(getFileRepoFactory().getLoggerHeaderMessage(StorageJSON.class)+"exception " + e + " During serialize fileVariable");
+            logger.error(getFileRepoFactory().getLoggerHeaderMessage(StorageJSON.class) + "exception " + e + " During serialize fileVariable");
             throw e;
         }
     }
@@ -63,17 +61,18 @@ public class StorageJSON extends Storage {
      */
     public FileVariable fromStorage(FileVariableReference fileVariableReference) throws Exception {
         try {
-            FileVariable fileVariable= new ObjectMapper().readValue( (String) fileVariableReference.content, FileVariable.class);
-            fileVariable.setStorageDefinition( getStorageDefinition());
+            FileVariable fileVariable = new ObjectMapper().readValue((String) fileVariableReference.content, FileVariable.class);
+            fileVariable.setStorageDefinition(getStorageDefinition());
             return fileVariable;
         } catch (JsonProcessingException e) {
-            logger.error(getFileRepoFactory().getLoggerHeaderMessage(StorageJSON.class)+"Exception " + e + " During unserialize fileVariable");
+            logger.error(getFileRepoFactory().getLoggerHeaderMessage(StorageJSON.class) + "Exception " + e + " During unserialize fileVariable");
             throw e;
         }
     }
 
     /**
      * Nothing to do here
+     *
      * @param fileVariableReference reference to purge
      * @return true if everything is correct
      * @throws Exception if any error arrive

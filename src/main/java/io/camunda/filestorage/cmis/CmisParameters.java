@@ -43,19 +43,20 @@ public class CmisParameters {
         if (cmisDefinition instanceof Map cmisDefinitionMap) {
             cmisParameters.url = (String) cmisDefinitionMap.get("url");
             cmisParameters.repositoryName = (String) cmisDefinitionMap.get("repository");
-            if (cmisParameters.repositoryName==null)
-                cmisParameters.repositoryName="default";
+            if (cmisParameters.repositoryName == null)
+                cmisParameters.repositoryName = "default";
             cmisParameters.userName = (String) cmisDefinitionMap.get("userName");
             cmisParameters.password = (String) cmisDefinitionMap.get("password");
             cmisParameters.storageDefinitionFolder = (String) cmisDefinitionMap.get("storageDefinitionFolder");
             return cmisParameters;
         } else
-            throw new Exception("CMIS parameter must be a Map format ["+cmisDefinition.getClass().getName()+"]");
+            throw new Exception("CMIS parameter must be a Map format [" + cmisDefinition.getClass().getName() + "]");
     }
 
     public static String getGsonTemplate() {
         return "{\"repository\":\"String\"}";
     }
+
     public enum TypeConnection {BROWSER, ATOMPUB}
 
 

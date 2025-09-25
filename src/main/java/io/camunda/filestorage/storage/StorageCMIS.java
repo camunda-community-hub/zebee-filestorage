@@ -29,21 +29,15 @@ public class StorageCMIS extends Storage {
         super(storageDefinition, fileRepoFactory);
     }
 
-    @Override
-    public String getName() {
-        return "CMIS";
-    }
-
     /**
-     *
-     * @param url Url to connect the CMIS repository
-     * @param repositoryName name of the repository. If null, then use "default"
-     * @param userName user name to connect
-     * @param password password to connect
+     * @param url                     Url to connect the CMIS repository
+     * @param repositoryName          name of the repository. If null, then use "default"
+     * @param userName                user name to connect
+     * @param password                password to connect
      * @param storageDefinitionFolder folder in the CMIS to store the default repository. If null, default is "storagecmis"
      * @return
      */
-    public static String getStorageDefinitionString( String url, String repositoryName, String userName, String password, String storageDefinitionFolder ) {
+    public static String getStorageDefinitionString(String url, String repositoryName, String userName, String password, String storageDefinitionFolder) {
         CmisParameters cmisParameters = new CmisParameters();
         cmisParameters.url = url;
         cmisParameters.repositoryName = repositoryName;
@@ -52,18 +46,24 @@ public class StorageCMIS extends Storage {
         cmisParameters.userName = userName;
         cmisParameters.password = password;
         cmisParameters.storageDefinitionFolder = storageDefinitionFolder;
-        if (cmisParameters.storageDefinitionFolder==null)
-            cmisParameters.storageDefinitionFolder="storagecmis";
+        if (cmisParameters.storageDefinitionFolder == null)
+            cmisParameters.storageDefinitionFolder = "storagecmis";
 
         Gson gson = new Gson();
         String complement = gson.toJson(cmisParameters);
-        return StorageDefinition.StorageDefinitionType.CMIS.toString() + StorageDefinition.STORAGE_DEFINITION_DELIMITATEUR + complement;
+        return StorageDefinition.StorageDefinitionType.CMIS + StorageDefinition.STORAGE_DEFINITION_DELIMITATEUR + complement;
     }
+
+    @Override
+    public String getName() {
+        return "CMIS";
+    }
+
     /**
      * Save the file Variable structure in the CMIS repository
      *
-     * @param fileVariable      fileVariable to save it
-     * @param fileVariableReference  file variable to update (may be null)
+     * @param fileVariable          fileVariable to save it
+     * @param fileVariableReference file variable to update (may be null)
      */
     public FileVariableReference toStorage(FileVariable fileVariable, FileVariableReference fileVariableReference) throws Exception {
         CmisParameters cmisParameters = CmisParameters.getCodingConnection(getStorageDefinition().complementInObject);
@@ -79,7 +79,7 @@ public class StorageCMIS extends Storage {
             throw new Exception("Folder [" + cmisParameters.storageDefinitionFolder + "] does not exists");
 
         cmisConnection.uploadNewDocument(
-                CmisConnection.DocumentProperties.getDocument(cmisParameters.storageDefinitionFolder,fileVariable.getName() + uniqId),
+                CmisConnection.DocumentProperties.getDocument(cmisParameters.storageDefinitionFolder, fileVariable.getName() + uniqId),
                 documentValue,
                 fileVariable.getValue().length,
                 fileVariable.getMimeType());
@@ -94,19 +94,19 @@ public class StorageCMIS extends Storage {
     /**
      * read the fileVariable
      *
-     * @param fileVariableReference          name of the file in the temporary directory
+     * @param fileVariableReference name of the file in the temporary directory
      * @return the fileVariable object
      * @throws Exception during the writing
      */
-    public FileVariable fromStorage( FileVariableReference fileVariableReference) throws Exception {
+    public FileVariable fromStorage(FileVariableReference fileVariableReference) throws Exception {
         CmisParameters cmisParameters = CmisParameters.getCodingConnection(getStorageDefinition().complementInObject);
         CmisConnection cmisConnection = CmisFactoryConnection.getInstance().getCmisConnection(cmisParameters);
         if (cmisConnection == null)
             throw new Exception("Can't connect the the CMIS repository");
         ContentStream documentStream = cmisConnection.getDocumentByPath(cmisParameters.storageDefinitionFolder, fileVariableReference.content.toString());
         FileVariable fileVariable = new FileVariable(getStorageDefinition());
-        fileVariable.setName( fileVariableReference.content.toString() );
-        fileVariable.setMimeType( documentStream.getMimeType());
+        fileVariable.setName(fileVariableReference.content.toString());
+        fileVariable.setMimeType(documentStream.getMimeType());
         try {
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
@@ -118,10 +118,10 @@ public class StorageCMIS extends Storage {
             }
 
             buffer.flush();
-            fileVariable.setValue( buffer.toByteArray());
+            fileVariable.setValue(buffer.toByteArray());
             return fileVariable;
         } catch (Exception e) {
-            logger.error(getFileRepoFactory().getLoggerHeaderMessage(StorageCMIS.class)+": exception " + e + " During read file[" + fileVariableReference.content.toString() + "]");
+            logger.error(getFileRepoFactory().getLoggerHeaderMessage(StorageCMIS.class) + ": exception " + e + " During read file[" + fileVariableReference.content.toString() + "]");
             throw e;
         }
     }
@@ -130,10 +130,11 @@ public class StorageCMIS extends Storage {
     /**
      * Remove a file in the directory
      * Remove a file in the directory
-     * @param fileVariableReference          name of the file in the temporary directory
+     *
+     * @param fileVariableReference name of the file in the temporary directory
      * @return true if the operation was successful
      */
-    public boolean purgeStorage( FileVariableReference fileVariableReference)  throws Exception {
+    public boolean purgeStorage(FileVariableReference fileVariableReference) throws Exception {
         CmisParameters cmisParameters = CmisParameters.getCodingConnection(getStorageDefinition().complementInObject);
         CmisConnection cmisConnection = CmisFactoryConnection.getInstance().getCmisConnection(cmisParameters);
         if (cmisConnection == null)

@@ -6,14 +6,7 @@
 /* ******************************************************************** */
 package io.camunda.filestorage.cmis;
 
-import org.apache.chemistry.opencmis.client.api.CmisObject;
-import org.apache.chemistry.opencmis.client.api.Document;
-import org.apache.chemistry.opencmis.client.api.DocumentType;
-import org.apache.chemistry.opencmis.client.api.Folder;
-import org.apache.chemistry.opencmis.client.api.ObjectType;
-import org.apache.chemistry.opencmis.client.api.Repository;
-import org.apache.chemistry.opencmis.client.api.Session;
-import org.apache.chemistry.opencmis.client.api.SessionFactory;
+import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
@@ -29,8 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CmisConnection {
-    protected Session session;
     private final CmisParameters cmisParameters;
+    protected Session session;
     private Repository repository;
 
 
@@ -90,7 +83,7 @@ public class CmisConnection {
      * @return the folder object
      */
     public Folder getFolderByPath(final String path) {
-        CmisObject cmisObject= session.getObjectByPath(path);
+        CmisObject cmisObject = session.getObjectByPath(path);
         if (cmisObject instanceof Folder cmisFolder)
             return cmisFolder;
         return null;
@@ -102,6 +95,7 @@ public class CmisConnection {
 
     /**
      * Return an object by it's ID
+     *
      * @param objectId Id of object
      * @return a CMIS Object
      */
@@ -121,39 +115,6 @@ public class CmisConnection {
             return true;
         } catch (final CmisObjectNotFoundException e) {
             return false;
-        }
-    }
-
-
-    public static class DocumentProperties {
-        String parentFolder;
-        String documentName;
-        String objectType = "cmis:document";
-        VersioningState versioningState = null;
-
-        /**
-         * Ask to save a document. To not ask for a versioning policy
-         *
-         * @param parentFolder parent where the document is loaded
-         * @param documentName name of document
-         * @return a Document properties
-         */
-        public static DocumentProperties getDocument(String parentFolder, String documentName) {
-            DocumentProperties documentProperties = new DocumentProperties();
-            documentProperties.parentFolder = parentFolder;
-            documentProperties.documentName = documentName;
-            documentProperties.objectType = "cmis:document";
-            documentProperties.versioningState = VersioningState.NONE;
-            return documentProperties;
-        }
-
-        public static DocumentProperties getVersionnableDocument(String parentFolder, String documentName, String objectType) {
-            DocumentProperties documentProperties = new DocumentProperties();
-            documentProperties.parentFolder = parentFolder;
-            documentProperties.documentName = documentName;
-            documentProperties.objectType = objectType;
-            documentProperties.versioningState = VersioningState.MAJOR;
-            return documentProperties;
         }
     }
 
@@ -255,9 +216,42 @@ public class CmisConnection {
 
     /**
      * Access the CMIS session for any advance usage
+     *
      * @return the session Id
      */
     public Session getSession() {
         return session;
+    }
+
+    public static class DocumentProperties {
+        String parentFolder;
+        String documentName;
+        String objectType = "cmis:document";
+        VersioningState versioningState = null;
+
+        /**
+         * Ask to save a document. To not ask for a versioning policy
+         *
+         * @param parentFolder parent where the document is loaded
+         * @param documentName name of document
+         * @return a Document properties
+         */
+        public static DocumentProperties getDocument(String parentFolder, String documentName) {
+            DocumentProperties documentProperties = new DocumentProperties();
+            documentProperties.parentFolder = parentFolder;
+            documentProperties.documentName = documentName;
+            documentProperties.objectType = "cmis:document";
+            documentProperties.versioningState = VersioningState.NONE;
+            return documentProperties;
+        }
+
+        public static DocumentProperties getVersionnableDocument(String parentFolder, String documentName, String objectType) {
+            DocumentProperties documentProperties = new DocumentProperties();
+            documentProperties.parentFolder = parentFolder;
+            documentProperties.documentName = documentName;
+            documentProperties.objectType = objectType;
+            documentProperties.versioningState = VersioningState.MAJOR;
+            return documentProperties;
+        }
     }
 }

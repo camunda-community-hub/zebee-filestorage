@@ -20,7 +20,7 @@ import java.util.Collections;
 public class StorageGoogleDrive extends Storage {
     Logger logger = LoggerFactory.getLogger(StorageCMIS.class.getName());
 
-    private String APPLICATION_NAME = "FileStorage";
+    private final String APPLICATION_NAME = "FileStorage";
 
     public StorageGoogleDrive(StorageDefinition storageDefinition, FileRepoFactory fileRepoFactory) {
         super(storageDefinition, fileRepoFactory);

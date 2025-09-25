@@ -20,12 +20,28 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class StorageFolder extends Storage{
+public class StorageFolder extends Storage {
     Logger logger = LoggerFactory.getLogger(StorageFolder.class.getName());
 
 
     public StorageFolder(StorageDefinition storageDefinition, FileRepoFactory fileRepoFactory) {
         super(storageDefinition, fileRepoFactory);
+    }
+
+    /**
+     * @param folder folder to save the file
+     * @return the connection string
+     */
+    public static String getStorageDefinitionString(String folder) {
+        return StorageDefinition.StorageDefinitionType.FOLDER + StorageDefinition.STORAGE_DEFINITION_DELIMITATEUR + folder;
+    }
+
+    /**
+     * @param folder folder to save the file
+     * @return the connection string
+     */
+    public static String getStorageDefinitionString(Path folder) {
+        return StorageDefinition.StorageDefinitionType.FOLDER + StorageDefinition.STORAGE_DEFINITION_DELIMITATEUR + folder.toString();
     }
 
     @Override
@@ -34,33 +50,15 @@ public class StorageFolder extends Storage{
     }
 
     /**
-     *
-     * @param folder folder to save the file
-     * @return the connection string
-     */
-    public static String getStorageDefinitionString(String folder ) {
-        return StorageDefinition.StorageDefinitionType.FOLDER.toString()+StorageDefinition.STORAGE_DEFINITION_DELIMITATEUR+folder;
-    }
-
-    /**
-     *
-     * @param folder folder to save the file
-     * @return the connection string
-     */
-    public static String getStorageDefinitionString(Path folder ) {
-        return StorageDefinition.StorageDefinitionType.FOLDER.toString()+StorageDefinition.STORAGE_DEFINITION_DELIMITATEUR+folder.toString();
-    }
-
-    /**
      * Save the file Variable structure in the temporary folder
      *
-     * @param fileVariable      fileVariable to save it
-     * @param fileVariableReference  file variable to update (may be null)
+     * @param fileVariable          fileVariable to save it
+     * @param fileVariableReference file variable to update (may be null)
      */
     public FileVariableReference toStorage(FileVariable fileVariable, FileVariableReference fileVariableReference) throws Exception {
         Path tempPath = null;
         try {
-            String uniqId = fileVariableReference==null? getFileRepoFactory().generateUniqId() : (String) fileVariableReference.content;
+            String uniqId = fileVariableReference == null ? getFileRepoFactory().generateUniqId() : (String) fileVariableReference.content;
             Path pathFolder = extractPath(getStorageDefinition());
             Path file = Paths.get(pathFolder + FileSystems.getDefault().getSeparator() + fileVariable.getName() + uniqId);
             Files.write(file, fileVariable.getValue());
@@ -70,7 +68,7 @@ public class StorageFolder extends Storage{
             return fileVariableReferenceOutput;
 
         } catch (Exception e) {
-            logger.error(getFileRepoFactory().getLoggerHeaderMessage(StorageFolder.class)+"Exception " + e + " During write fileVariable on tempFolder[" + tempPath + "]");
+            logger.error(getFileRepoFactory().getLoggerHeaderMessage(StorageFolder.class) + "Exception " + e + " During write fileVariable on tempFolder[" + tempPath + "]");
             throw e;
         }
     }
@@ -78,42 +76,44 @@ public class StorageFolder extends Storage{
     /**
      * read the fileVariable
      *
-     * @param fileVariableReference          name of the file in the temporary directory
+     * @param fileVariableReference name of the file in the temporary directory
      * @return the fileVariable object
      * @throws Exception during the writing
      */
-    public FileVariable fromStorage( FileVariableReference fileVariableReference) throws Exception {
+    public FileVariable fromStorage(FileVariableReference fileVariableReference) throws Exception {
         Path pathFolder = null;
         String fileName = fileVariableReference.content.toString();
         try {
             pathFolder = extractPath(getStorageDefinition());
 
             FileVariable fileVariable = new FileVariable(getStorageDefinition());
-            fileVariable.setName( fileName);
-            fileVariable.setMimeType( FileVariable.getMimeTypeFromName(fileName));
-            fileVariable.setValue( Files.readAllBytes(Paths.get(pathFolder + FileSystems.getDefault().getSeparator() + fileName)));
+            fileVariable.setName(fileName);
+            fileVariable.setMimeType(FileVariable.getMimeTypeFromName(fileName));
+            fileVariable.setValue(Files.readAllBytes(Paths.get(pathFolder + FileSystems.getDefault().getSeparator() + fileName)));
             return fileVariable;
 
         } catch (Exception e) {
-            logger.error(getFileRepoFactory().getLoggerHeaderMessage(StorageFolder.class)+"Exception " + e + " During read file[" + fileName + "] in temporaryPath[" + pathFolder + "]");
+            logger.error(getFileRepoFactory().getLoggerHeaderMessage(StorageFolder.class) + "Exception " + e + " During read file[" + fileName + "] in temporaryPath[" + pathFolder + "]");
             throw e;
         }
     }
 
     /**
      * Remove a file in the directory
-     * @param fileVariableReference          name of the file in the temporary directory
+     *
+     * @param fileVariableReference name of the file in the temporary directory
      * @return true if the operation was successful
      */
-    public boolean purgeStorage( FileVariableReference fileVariableReference) {
-       Path pathFolder = extractPath(getStorageDefinition());
+    public boolean purgeStorage(FileVariableReference fileVariableReference) {
+        Path pathFolder = extractPath(getStorageDefinition());
         String fileName = fileVariableReference.content.toString();
 
-       File file = new File(pathFolder + FileSystems.getDefault().getSeparator()+fileName);
-       if (file.exists())
-         return file.delete();
-       return true;
+        File file = new File(pathFolder + FileSystems.getDefault().getSeparator() + fileName);
+        if (file.exists())
+            return file.delete();
+        return true;
     }
+
     /**
      * Extract the path from the storage definition
      * convention is FOLDER:<path>

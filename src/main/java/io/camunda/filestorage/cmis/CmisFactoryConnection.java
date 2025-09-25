@@ -12,9 +12,8 @@ import java.util.Map;
 
 public class CmisFactoryConnection {
 
-    public Map<String, CmisConnection> allConnections = new HashMap<>();
-
     private static final CmisFactoryConnection singletonCmisFactory = new CmisFactoryConnection();
+    public Map<String, CmisConnection> allConnections = new HashMap<>();
 
     public static CmisFactoryConnection getInstance() {
         return singletonCmisFactory;
