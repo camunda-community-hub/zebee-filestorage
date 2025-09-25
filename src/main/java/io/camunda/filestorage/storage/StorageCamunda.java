@@ -6,19 +6,13 @@ import io.camunda.document.store.DocumentCreationRequest;
 import io.camunda.filestorage.FileRepoFactory;
 import io.camunda.filestorage.FileVariable;
 import io.camunda.filestorage.FileVariableReference;
-import io.camunda.zeebe.client.api.response.DocumentReferenceResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class StorageCamunda extends Storage {
+    public static String STORAGE_CAMUNDA_NAME = "camunda";
     Logger logger = LoggerFactory.getLogger(StorageCamunda.class.getName());
-
     OutboundConnectorContext outboundConnectorContext;
-
-    @Override
-    public String getName() {
-        return "CAMUNDA";
-    }
 
     public StorageCamunda(OutboundConnectorContext outboundConnectorContext, StorageDefinition storageDefinition, FileRepoFactory fileRepoFactory) {
         super(storageDefinition, fileRepoFactory);
@@ -26,9 +20,14 @@ public class StorageCamunda extends Storage {
     }
 
     @Override
+    public String getName() {
+        return STORAGE_CAMUNDA_NAME;
+    }
+
+    @Override
     public FileVariableReference toStorage(FileVariable fileVariable, FileVariableReference fileVariableReference) throws Exception {
 
-        DocumentCreationRequest documentCreation = DocumentCreationRequest.from(fileVariable.getValue())
+        DocumentCreationRequest documentCreation = DocumentCreationRequest.from(fileVariable.getValueStream())
                 .contentType(fileVariable.getMimeType())
                 .fileName(fileVariable.getName())
                 .build();
@@ -49,16 +48,12 @@ public class StorageCamunda extends Storage {
         Document document = outboundConnectorContext.resolve(fileVariableReference.camundaReference);
 
         FileVariable fileVariable = new FileVariable();
-        StorageDefinition storageDefinition = new StorageDefinition();
-        storageDefinition.type = StorageDefinition.StorageDefinitionType.CAMUNDA;
+        StorageDefinition storageDefinition = new StorageDefinition(StorageDefinition.StorageDefinitionType.CAMUNDA);
         fileVariable.setStorageDefinition(storageDefinition);
-        if (fileVariableReference.camundaReference instanceof DocumentReferenceResponse documentReferenceResponse) {
-            fileVariable.setName(documentReferenceResponse.getMetadata().getFileName());
-            fileVariable.setMimeType(documentReferenceResponse.getMetadata().getContentType());
-        }
+        fileVariable.setName(document.metadata().getFileName());
+        fileVariable.setMimeType(document.metadata().getContentType());
 
-
-        fileVariable.setValue(document.asByteArray());
+        fileVariable.setValueStream(document.asInputStream());
 
         return fileVariable;
     }
