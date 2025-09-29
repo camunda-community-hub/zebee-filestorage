@@ -42,6 +42,7 @@ jobs:
           maven-auto-release-after-close: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.event.release.target_commitish || github.ref_name }}
+          maven-args: "-X"
         id: release
 
       - if: github.event.release
