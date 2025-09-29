@@ -3,6 +3,30 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <name>Camunda FileStorage</name>
+    <description>Library to access different storage to allow a worker/connector to access document. C8 DocumentHandling is managed too via this library</description>
+    <url>https://github.com/camunda-community-hub/zebee-filestorage</url>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:https://github.com/camunda-community-hub/filestorage.git</connection>
+        <developerConnection>scm:git:https://github.com/camunda-community-hub/filestorage.git</developerConnection>
+        <url>https://github.com/camunda-community-hub/filestorage</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>pymonnet</id>
+            <name>Pierre-Yves Monnet</name>
+            <url>https://github.com/pymonnet</url>
+        </developer>
+    </developers>
 
     <groupId>io.camunda.filestorage</groupId>
     <artifactId>filestorage</artifactId>
