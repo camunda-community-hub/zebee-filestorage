@@ -142,7 +142,7 @@ public class StorageGoogleDrive extends Storage {
                     JacksonFactory.getDefaultInstance(),
                     credential
             ).setApplicationName(APPLICATION_NAME).build();
-            logger.info("Connected to Google drive in {} ms", System.currentTimeMillis() - beginExecution);
+            logger.debug("Connected to Google drive in {} ms", System.currentTimeMillis() - beginExecution);
             return drive;
 
         } catch (Exception e) {

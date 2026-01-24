@@ -139,7 +139,7 @@ public class StorageCMIS extends Storage {
         CmisConnection cmisConnection = CmisFactoryConnection.getInstance().getCmisConnection(cmisParameters);
         if (cmisConnection == null)
             throw new Exception("Can't connect the the CMIS repository");
-        return cmisConnection.removeDocumentByPath(cmisParameters.storageDefinitionFolder, fileVariableReference.content.toString());
+        return cmisConnection.deleteDocumentByPath(cmisParameters.storageDefinitionFolder, fileVariableReference.content.toString());
     }
 
 }

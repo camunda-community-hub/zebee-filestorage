@@ -182,12 +182,27 @@ public class CmisConnection {
      * @param parentFolder folder where the document is
      * @param documentName name of the document
      */
-    public void deleteDocumentByPath(String parentFolder, final String documentName) {
+    public boolean deleteDocumentByPath(final String parentFolder, final String documentName) {
         Document existingDocument = (Document) session.getObjectByPath(parentFolder + "/" + documentName);
-        if (existingDocument != null)
+        if (existingDocument != null) {
             existingDocument.delete();
+            return true;
+        }
+        return false;
     }
 
+    /**
+     * ObjectId to delete
+     * @param objectId object Id
+     */
+    public boolean deleteObjectById(final String objectId) {
+        CmisObject cmisObject = getObjectById(objectId);
+        if (cmisObject != null) {
+            cmisObject.delete();
+            return true;
+        }
+        return false;
+    }
     /**
      * Return a document in a folder
      *
@@ -200,19 +215,7 @@ public class CmisConnection {
         return existingDocument.getContentStream();
     }
 
-    /**
-     * Delete a document
-     *
-     * @param parentFolder folder where the parent is
-     * @param documentName name of the document
-     * @return true if the document is deteled, false else (document does not exist)
-     */
-    public boolean removeDocumentByPath(String parentFolder, final String documentName) {
-        Document existingDocument = (Document) session.getObjectByPath(parentFolder + "/" + documentName);
-        if (existingDocument != null)
-            session.delete(existingDocument);
-        return false;
-    }
+
 
     /**
      * Access the CMIS session for any advance usage

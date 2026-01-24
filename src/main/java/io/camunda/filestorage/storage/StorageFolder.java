@@ -65,8 +65,8 @@ public class StorageFolder extends Storage {
             FileVariableReference fileVariableReferenceOutput = new FileVariableReference();
             fileVariableReferenceOutput.storageDefinition = getStorageDefinition().encodeToString();
             fileVariableReferenceOutput.content = file.getFileName().toString();
+            logger.debug("toStorage[{}]",file.toAbsolutePath().toString());
             return fileVariableReferenceOutput;
-
         } catch (Exception e) {
             logger.error(getFileRepoFactory().getLoggerHeaderMessage(StorageFolder.class) + "Exception " + e + " During write fileVariable on tempFolder[" + tempPath + "]");
             throw e;
@@ -89,9 +89,10 @@ public class StorageFolder extends Storage {
             FileVariable fileVariable = new FileVariable(getStorageDefinition());
             fileVariable.setName(fileName);
             fileVariable.setMimeType(FileVariable.getMimeTypeFromName(fileName));
-            fileVariable.setValue(Files.readAllBytes(Paths.get(pathFolder + FileSystems.getDefault().getSeparator() + fileName)));
+            Path sourcePath = Paths.get(pathFolder + FileSystems.getDefault().getSeparator() + fileName);
+            fileVariable.setValue(Files.readAllBytes(sourcePath));
+            logger.debug("FromStorage[{}]",sourcePath.toAbsolutePath().toString());
             return fileVariable;
-
         } catch (Exception e) {
             logger.error(getFileRepoFactory().getLoggerHeaderMessage(StorageFolder.class) + "Exception " + e + " During read file[" + fileName + "] in temporaryPath[" + pathFolder + "]");
             throw e;

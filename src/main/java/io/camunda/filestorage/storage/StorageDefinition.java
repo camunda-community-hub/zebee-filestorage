@@ -11,10 +11,14 @@
 /* ******************************************************************** */
 package io.camunda.filestorage.storage;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import io.camunda.filestorage.cmis.CmisParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 /**
  * Why the storageDefinition does not contains the OutboundConnectorContext ?
@@ -51,12 +55,55 @@ public class StorageDefinition {
 
     }
 
+    public static StorageDefinition getFromJson(String json) throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+
+        // Deserialize JSON to object
+        return mapper.readValue(json, StorageDefinition.class);
+    }
+
     /**
+     * Convert an object to the storage definition
+     *
+     * @param source object containing properties
+     * @throws Exception
+     * @returna storage
+     */
+    public static StorageDefinition getFromMap(Map source) throws Exception {
+        // Deserialize JSON to object
+        return new ObjectMapper().convertValue(source, StorageDefinition.class);
+    }
+
+    public static StorageDefinition getFromObject(Object source) throws Exception {
+        if (source instanceof String sourceString) {
+            return getFromJson(sourceString);
+        }
+        if (source instanceof Map<?, ?> sourceMap) {
+            return getFromMap(sourceMap);
+        }
+        return null;
+    }
+
+    /**
+     * Give a storage definition as a string
+     * @param storageTypeSt storage as a string
+     * @return a storageDefinition
+     * @throws Exception if the string does not map a type
+     */
+    public static StorageDefinition getFromStorageDefinition(String storageTypeSt) throws Exception {
+        StorageDefinition storageDefinition = new StorageDefinition(StorageDefinitionType.valueOf(storageTypeSt));
+        return storageDefinition;
+    }
+
+
+    /**
+     * decodeFromString is the opposite of encodeToString() method
+     *
      * @param completeStorageDefinition storage definition as a string
-     * @return the storageDefinition object
+     * @return the storageDefinition code like "FOLDER:/tmp/folder"
      * @throws Exception in case of error
      */
-    public static StorageDefinition getFromString(String completeStorageDefinition) throws Exception {
+    public static StorageDefinition decodeFromString(String completeStorageDefinition) throws Exception {
         try {
             int posDelimiter = completeStorageDefinition.indexOf(STORAGE_DEFINITION_DELIMITATEUR);
 
@@ -95,7 +142,7 @@ public class StorageDefinition {
     /**
      * Encode the current storage definition to a String, so it is easily movable to any information
      *
-     * @return the string which encode the storage definition
+     * @return the string that encodes the storage definition
      */
     public String encodeToString() {
         String result = type.toString();
@@ -113,6 +160,7 @@ public class StorageDefinition {
      *
      * @return information on the storageDefinition
      */
+    @JsonIgnore
     public String getInformation() {
         StringBuilder info = new StringBuilder();
         info.append(type.toString());
@@ -135,7 +183,7 @@ public class StorageDefinition {
                     info.append("]");
                 } catch (Exception e) {
                     info.append("Can't decode Parameter ");
-                    info.append( e.getMessage());
+                    info.append(e.getMessage());
                 }
                 break;
 

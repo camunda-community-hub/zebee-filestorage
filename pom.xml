@@ -35,7 +35,10 @@
          "content": "https://raw.githubusercontent.com/camunda-community-hub/connector-8-CMIS/2-0-Move-to-connector-8.5/src/test/resources/files/largeDocument.pdf"
          } -->
     <!-- 2.1.1 set the @JsonIgnore on method "isCalundaDocument()" to avoid to save it in the JSON. Add the InputStream methods  -->
-    <version>2.1.1</version>
+    <!-- 2.2.0 add CMIS function for CMIS connector -->
+    <!-- 2.2.1turn some INFO level DEBUG level -->
+    <!-- 2.3.0 allow redirect URL on StorageURL -->
+    <version>2.3.0</version>
 
     <properties>
         <maven.compiler.release>21</maven.compiler.release>

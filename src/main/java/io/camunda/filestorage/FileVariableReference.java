@@ -77,7 +77,7 @@ public class FileVariableReference {
             if (fileReference instanceof String fileReferenceSt) {
                 try {
                     FileVariableReference fileVariableReference = new ObjectMapper().readValue(fileReferenceSt, FileVariableReference.class);
-                    fileVariableReference.storageDefinitionObject = StorageDefinition.getFromString(fileVariableReference.storageDefinition);
+                    fileVariableReference.storageDefinitionObject = StorageDefinition.decodeFromString(fileVariableReference.storageDefinition);
                     return fileVariableReference;
                 } catch (Exception e) {
                     // Do nothing, try the next option
@@ -87,7 +87,7 @@ public class FileVariableReference {
                 try {
                     // if the value is given explicitly, the modeler imposes to \ each ", so we have to replace all \" by "
                     FileVariableReference fileVariableReference = new ObjectMapper().readValue(fileReferenceJsonWithoutBackslash, FileVariableReference.class);
-                    fileVariableReference.storageDefinitionObject = StorageDefinition.getFromString(fileVariableReference.storageDefinition);
+                    fileVariableReference.storageDefinitionObject = StorageDefinition.decodeFromString(fileVariableReference.storageDefinition);
                     return fileVariableReference;
                 } catch (Exception e) {
                     // then now we have to log the error
@@ -106,7 +106,7 @@ public class FileVariableReference {
                         FileVariableReference fileVariableReference = new FileVariableReference();
                         fileVariableReference.camundaReference = getCamundaReferenceFromObject(fileReferenceMap.get("camundaReference"));
                         fileVariableReference.storageDefinition = StorageDefinition.StorageDefinitionType.CAMUNDA.toString();
-                        fileVariableReference.storageDefinitionObject = StorageDefinition.getFromString(fileVariableReference.storageDefinition);
+                        fileVariableReference.storageDefinitionObject = StorageDefinition.decodeFromString(fileVariableReference.storageDefinition);
                         fileVariableReference.originalFileName = (String) fileReferenceMap.get("originalFileName");
                         return fileVariableReference;
                     } else {
@@ -117,7 +117,7 @@ public class FileVariableReference {
                                 .configure(DeserializationFeature.FAIL_ON_NULL_CREATOR_PROPERTIES, false);
 
                         FileVariableReference fileVariableReference = mapper.convertValue(fileReferenceMap, FileVariableReference.class);
-                        fileVariableReference.storageDefinitionObject = StorageDefinition.getFromString(fileVariableReference.storageDefinition);
+                        fileVariableReference.storageDefinitionObject = StorageDefinition.decodeFromString(fileVariableReference.storageDefinition);
                         return fileVariableReference;
                     }
                 } catch (Exception e) {
@@ -173,7 +173,7 @@ public class FileVariableReference {
             outboundConnectorContext) {
         StringBuilder result = new StringBuilder();
         try {
-            StorageDefinition storageDefinition = StorageDefinition.getFromString(fileVariableReference.storageDefinition);
+            StorageDefinition storageDefinition = StorageDefinition.decodeFromString(fileVariableReference.storageDefinition);
             result.append(storageDefinition.getInformation());
         } catch (Exception e) {
             result.append("Can't get storageDefinition from [");
@@ -232,7 +232,7 @@ public class FileVariableReference {
             return storageDefinitionObject;
         }
         if (storageDefinition != null) {
-            return StorageDefinition.getFromString(storageDefinition);
+            return StorageDefinition.decodeFromString(storageDefinition);
         }
         return null;
     }

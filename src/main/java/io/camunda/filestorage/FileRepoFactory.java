@@ -41,7 +41,7 @@ public class FileRepoFactory {
      */
     public FileVariable createFileVariable() {
         try {
-            return new FileVariable(StorageDefinition.getFromString(StorageDefinition.StorageDefinitionType.JSON.toString()));
+            return new FileVariable( new StorageDefinition(StorageDefinition.StorageDefinitionType.JSON));
         } catch (Exception e) {
             // It should never have happened: JSON does not generate an exception
             return null;
@@ -110,7 +110,7 @@ public class FileRepoFactory {
             logger.warn("FileRepoFactory.purgeFileVariable : the fileVariableReference must not be null - no purge");
             return true;
         }
-        StorageDefinition storageDefinition = StorageDefinition.getFromString(fileVariableReference.storageDefinition);
+        StorageDefinition storageDefinition = StorageDefinition.decodeFromString(fileVariableReference.storageDefinition);
         Storage storage = getStorage(storageDefinition, outboundConnectorContext);
         return storage.purgeStorage(fileVariableReference);
     }

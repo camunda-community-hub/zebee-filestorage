@@ -60,6 +60,7 @@ public class StorageTempFolder extends Storage {
             FileVariableReference fileVariableReferenceOutput = new FileVariableReference();
             fileVariableReferenceOutput.storageDefinition = getStorageDefinition().encodeToString();
             fileVariableReferenceOutput.content = tempPath.getFileName().toString();
+            logger.debug("toStorage[{}]",tempPath.toAbsolutePath().toString());
             return fileVariableReferenceOutput;
 
         } catch (Exception e) {
@@ -86,6 +87,7 @@ public class StorageTempFolder extends Storage {
             fileVariable.setMimeType(FileVariable.getMimeTypeFromName(fileVariableReference.content.toString()));
             Path filePath = Paths.get(tempFolder + separator + fileVariableReference.content.toString());
             fileVariable.setValueStream(Files.newInputStream(filePath));
+            logger.debug("FromStorage[{}]",filePath.toAbsolutePath().toString());
             return fileVariable;
 
         } catch (Exception e) {

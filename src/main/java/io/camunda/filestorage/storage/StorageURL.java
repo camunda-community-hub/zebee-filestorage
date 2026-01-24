@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -65,11 +66,15 @@ public class StorageURL extends Storage {
         try {
             URL url = new URL(fileVariableReference.getContent().toString());
 
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setInstanceFollowRedirects(true);
+            connection.setRequestProperty("User-Agent", "Java"); // IMPORTANT for GitHub
+
             // Open a connection to the URL
             // don't use a try() because we want the inputStream open when we finish the method
-            InputStream urlInputStream = url.openStream();
-            // Define a buffer to read data into
+            InputStream urlInputStream = connection.getInputStream();
 
+            // Define a buffer to read data into
             Path pathUri = Paths.get(url.toURI().getPath());
             String filename = pathUri.getFileName().toString();
 
