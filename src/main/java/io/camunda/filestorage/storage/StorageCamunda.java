@@ -1,8 +1,8 @@
 package io.camunda.filestorage.storage;
 
+import io.camunda.connector.api.document.Document;
+import io.camunda.connector.api.document.DocumentCreationRequest;
 import io.camunda.connector.api.outbound.OutboundConnectorContext;
-import io.camunda.document.Document;
-import io.camunda.document.store.DocumentCreationRequest;
 import io.camunda.filestorage.FileRepoFactory;
 import io.camunda.filestorage.FileVariable;
 import io.camunda.filestorage.FileVariableReference;

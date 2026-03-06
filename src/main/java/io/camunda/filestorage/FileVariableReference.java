@@ -13,13 +13,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.camunda.connector.api.document.Document;
+import io.camunda.connector.api.document.DocumentReference;
 import io.camunda.connector.api.outbound.OutboundConnectorContext;
-import io.camunda.document.CamundaDocument;
-import io.camunda.document.reference.DocumentReference;
 import io.camunda.filestorage.storage.StorageDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.AbstractList;
 import java.util.Map;
 
@@ -59,7 +61,7 @@ public class FileVariableReference {
         try {
             DocumentReference documentReference = null;
             if (fileReference instanceof AbstractList fileReferenceList
-                    || fileReference instanceof CamundaDocument
+                    || fileReference instanceof Document
                     || fileReference instanceof DocumentReference) {
                 documentReference = getCamundaReferenceFromObject(fileReference);
             }
@@ -148,7 +150,7 @@ public class FileVariableReference {
      */
     @JsonIgnore
     private static DocumentReference getCamundaReferenceFromObject(Object reference) throws Exception {
-        if (reference instanceof CamundaDocument camundaDocument) {
+        if (reference instanceof Document camundaDocument) {
             return camundaDocument.reference();
         } else if (reference instanceof DocumentReference camundaReference) {
             return camundaReference;
@@ -156,7 +158,7 @@ public class FileVariableReference {
             if (referenceList.size() != 1) {
                 throw new Exception("FileStorage.FileVariableReference expect only one item in array, detected " + referenceList.size());
             }
-            CamundaDocument camundaDocument = (CamundaDocument) referenceList.get(0);
+            Document camundaDocument = (Document) referenceList.get(0);
             return camundaDocument.reference();
         }
 
@@ -243,5 +245,30 @@ public class FileVariableReference {
 
     public Object getContent() {
         return content;
+    }
+
+    /**
+     * Return the orignal filename behind the reference
+     * @return
+     */
+    public String getFileName() {
+        if (isCamundaDocument()) {
+            if (camundaReference instanceof DocumentReference.CamundaDocumentReference camundaDocumentReference)
+               return camundaDocumentReference.getMetadata().getFileName();
+            return null;
+        }
+        if ( originalFileName != null)
+            return originalFileName;
+
+        // It maybe a URL document? Then get it
+        if (getContent()!=null) {
+            String source = getContent().toString();
+            // maybe come from an URL? No file name in that situation
+            String fileName = URLDecoder.decode(source.substring(source.lastIndexOf('/') + 1), StandardCharsets.UTF_8);
+            return fileName;
+        }
+
+        return null;
+
     }
 }
