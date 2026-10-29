@@ -60,12 +60,15 @@ public class StorageFolder extends Storage {
         try {
             String uniqId = fileVariableReference == null ? getFileRepoFactory().generateUniqId() : (String) fileVariableReference.content;
             Path pathFolder = extractPath(getStorageDefinition());
-            Path file = Paths.get(pathFolder + FileSystems.getDefault().getSeparator() + fileVariable.getName() + uniqId);
+            Path file =
+                    pathFolder == null ?
+                            Paths.get(fileVariable.getName() + uniqId) :
+                            Paths.get(pathFolder + FileSystems.getDefault().getSeparator() + fileVariable.getName() + uniqId);
             Files.write(file, fileVariable.getValue());
             FileVariableReference fileVariableReferenceOutput = new FileVariableReference();
             fileVariableReferenceOutput.storageDefinition = getStorageDefinition().encodeToString();
             fileVariableReferenceOutput.content = file.getFileName().toString();
-            logger.debug("toStorage[{}]",file.toAbsolutePath().toString());
+            logger.debug("toStorage[{}]", file.toAbsolutePath().toString());
             return fileVariableReferenceOutput;
         } catch (Exception e) {
             logger.error(getFileRepoFactory().getLoggerHeaderMessage(StorageFolder.class) + "Exception " + e + " During write fileVariable on tempFolder[" + tempPath + "]");
@@ -91,7 +94,7 @@ public class StorageFolder extends Storage {
             fileVariable.setMimeType(FileVariable.getMimeTypeFromName(fileName));
             Path sourcePath = Paths.get(pathFolder + FileSystems.getDefault().getSeparator() + fileName);
             fileVariable.setValue(Files.readAllBytes(sourcePath));
-            logger.debug("FromStorage[{}]",sourcePath.toAbsolutePath().toString());
+            logger.debug("FromStorage[{}]", sourcePath.toAbsolutePath().toString());
             return fileVariable;
         } catch (Exception e) {
             logger.error(getFileRepoFactory().getLoggerHeaderMessage(StorageFolder.class) + "Exception " + e + " During read file[" + fileName + "] in temporaryPath[" + pathFolder + "]");
@@ -123,6 +126,8 @@ public class StorageFolder extends Storage {
      * @return the folder path
      */
     private Path extractPath(StorageDefinition storageDefinition) {
+        if (storageDefinition.complement == null)
+            return null;
         return Paths.get(storageDefinition.complement);
     }
 

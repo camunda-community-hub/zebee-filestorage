@@ -114,7 +114,8 @@ public class StorageDefinition {
 
             switch (storageDefinition.type) {
                 case FOLDER:
-                    storageDefinition.complement = completeStorageDefinition.substring(posDelimiter + 1);
+                    if (posDelimiter!=-1)
+                        storageDefinition.complement = completeStorageDefinition.substring(posDelimiter + 1);
                     break;
                 case CMIS:
                     String complement = completeStorageDefinition.substring(posDelimiter + 1);
